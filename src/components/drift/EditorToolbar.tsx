@@ -25,11 +25,8 @@ const EditorToolbar = ({
   const [showTextInput, setShowTextInput] = useState(false);
   const [showStickers, setShowStickers] = useState(false);
 
-  const canAddMore = elements.length < 8;
-  const imageCount = elements.filter(e => e.type === 'image').length;
-
   const addText = () => {
-    if (!textInput.trim() || !canAddMore) return;
+    if (!textInput.trim()) return;
     onAddElement({
       id: generateId(),
       type: 'text',
@@ -46,7 +43,6 @@ const EditorToolbar = ({
   };
 
   const addSticker = (sticker: string) => {
-    if (!canAddMore) return;
     onAddElement({
       id: generateId(),
       type: 'sticker',
@@ -62,7 +58,6 @@ const EditorToolbar = ({
   };
 
   const addImage = () => {
-    if (!canAddMore || imageCount >= 2) return;
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -89,10 +84,10 @@ const EditorToolbar = ({
   };
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-card/90 rounded-xl border border-border shadow-lg">
+    <div className="flex flex-col gap-3 p-4 min-h-[300px] bg-card/90 rounded-xl border border-border shadow-lg">
       {/* Element count */}
       <div className="text-xs text-muted-foreground text-center">
-        {elements.length}/8 elements
+        {elements.length} elements
       </div>
 
       {/* Add elements */}
@@ -101,7 +96,6 @@ const EditorToolbar = ({
           size="sm"
           variant="outline"
           onClick={() => { setShowTextInput(!showTextInput); setShowStickers(false); }}
-          disabled={!canAddMore}
           className="gap-1"
         >
           <Type className="w-4 h-4" /> Text
@@ -110,7 +104,6 @@ const EditorToolbar = ({
           size="sm"
           variant="outline"
           onClick={addImage}
-          disabled={!canAddMore || imageCount >= 2}
           className="gap-1"
         >
           <ImagePlus className="w-4 h-4" /> Image
@@ -119,7 +112,6 @@ const EditorToolbar = ({
           size="sm"
           variant="outline"
           onClick={() => { setShowStickers(!showStickers); setShowTextInput(false); }}
-          disabled={!canAddMore}
           className="gap-1"
         >
           <Smile className="w-4 h-4" /> Sticker

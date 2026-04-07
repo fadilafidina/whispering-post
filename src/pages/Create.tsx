@@ -130,7 +130,7 @@ const Create = () => {
   // ===== EDITOR =====
   return (
     <RiverBackground atmosphere={atmosphere}>
-      <div className="relative z-10 flex flex-col h-screen">
+      <div className="relative z-10 h-screen">
         {/* Header */}
         <div className="flex items-center justify-between p-3 shrink-0">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground gap-1">
@@ -155,8 +155,8 @@ const Create = () => {
           </div>
         </div>
 
-        {/* Canvas — fills all available space */}
-        <div className="flex-1 px-3 pb-2 min-h-0">
+        {/* Canvas leaves room for fixed bottom controls */}
+        <div className="px-3 pb-[340px] h-[calc(100vh-72px)] min-h-[320px]">
           <DriftCanvas
             elements={elements}
             onUpdateElement={updateElement}
@@ -167,8 +167,8 @@ const Create = () => {
           />
         </div>
 
-        {/* Toolbar + Send — compact bottom section */}
-        <div className="shrink-0 px-3 pb-3 space-y-2">
+        {/* Toolbar + Send — fixed at viewport bottom */}
+        <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 space-y-2">
           {!showPreview && (
             <div className="max-w-lg mx-auto w-full">
               <EditorToolbar
