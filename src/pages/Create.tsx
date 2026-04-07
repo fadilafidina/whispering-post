@@ -35,8 +35,6 @@ const Create = () => {
 
   const handleSend = async () => {
     if (elements.length === 0) return;
-
-    // Phase 1: Seal the envelope
     setSendPhase('sealing');
 
     const id = generateId();
@@ -51,12 +49,7 @@ const Create = () => {
     await saveDrift(drift);
     const link = `${window.location.origin}/d/${id}`;
 
-    // Phase 2: Float the envelope away
-    setTimeout(() => {
-      setSendPhase('floating');
-    }, 700);
-
-    // Phase 3: Show the link
+    setTimeout(() => setSendPhase('floating'), 700);
     setTimeout(() => {
       setGeneratedLink(link);
       setSendPhase('done');
@@ -75,28 +68,20 @@ const Create = () => {
     return (
       <RiverBackground atmosphere={atmosphere}>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
-          {/* Ripple effect under envelope */}
           {sendPhase === 'floating' && (
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               {[0, 0.3, 0.6].map((delay, i) => (
                 <div
                   key={i}
                   className="absolute w-24 h-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 animate-ripple"
-                  style={{
-                    borderColor: 'hsla(195, 60%, 80%, 0.4)',
-                    animationDelay: `${delay}s`,
-                  }}
+                  style={{ borderColor: 'hsla(195, 60%, 80%, 0.4)', animationDelay: `${delay}s` }}
                 />
               ))}
             </div>
           )}
-
-          {/* Envelope */}
           <div className={`text-8xl ${sendPhase === 'sealing' ? 'animate-envelope-seal' : 'animate-envelope-float-away'}`}>
             ✉️
           </div>
-
-          {/* Text */}
           <p className="mt-8 font-heading text-xl text-primary-foreground/70 italic animate-gentle-pulse">
             {sendPhase === 'sealing' ? 'Sealing your drift...' : 'Setting adrift...'}
           </p>
@@ -110,19 +95,16 @@ const Create = () => {
     return (
       <RiverBackground atmosphere={atmosphere}>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
-          <div className="bg-card/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-border animate-element-fade-in">
+          <div className="bg-card/90 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-border animate-element-fade-in">
             <div className="text-5xl mb-4">🌊</div>
             <h2 className="font-heading text-3xl font-light text-foreground mb-2">Your drift is on its way</h2>
             <p className="text-muted-foreground text-sm mb-6">Share this link — it will float for 24 hours</p>
-
             <div className="bg-muted rounded-lg p-3 mb-4 font-mono text-sm text-foreground break-all">
               {generatedLink}
             </div>
-
             <Button onClick={copyLink} className="w-full mb-3">
               {copied ? '✓ Copied!' : 'Copy Link'}
             </Button>
-
             <Button variant="ghost" onClick={() => navigate('/')} className="text-muted-foreground">
               Back to shore
             </Button>
@@ -135,8 +117,9 @@ const Create = () => {
   // ===== EDITOR =====
   return (
     <RiverBackground atmosphere={atmosphere}>
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <div className="flex items-center justify-between p-4">
+      <div className="relative z-10 flex flex-col h-screen">
+        {/* Header */}
+        <div className="flex items-center justify-between p-3 shrink-0">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground gap-1">
             <ArrowLeft className="w-4 h-4" /> Back
           </Button>
@@ -153,40 +136,41 @@ const Create = () => {
           </div>
         </div>
 
-        <div className="flex-1 px-4 pb-4">
+        {/* Canvas — fills all available space */}
+        <div className="flex-1 px-3 pb-2 min-h-0">
           <DriftCanvas
             elements={elements}
             onUpdateElement={updateElement}
+            onRemoveElement={removeElement}
             onSelectElement={setSelectedId}
             selectedId={selectedId}
             editable={!showPreview}
           />
         </div>
 
-        {!showPreview && (
-          <div className="p-4 max-w-lg mx-auto w-full">
-            <EditorToolbar
-              elements={elements}
-              onAddElement={addElement}
-              onRemoveElement={removeElement}
-              onUpdateElement={updateElement}
-              selectedId={selectedId}
-              atmosphere={atmosphere}
-              onAtmosphereChange={setAtmosphere}
-              senderName={senderName}
-              onSenderNameChange={setSenderName}
-            />
+        {/* Toolbar + Send — compact bottom section */}
+        <div className="shrink-0 px-3 pb-3 space-y-2">
+          {!showPreview && (
+            <div className="max-w-lg mx-auto w-full">
+              <EditorToolbar
+                elements={elements}
+                onAddElement={addElement}
+                atmosphere={atmosphere}
+                onAtmosphereChange={setAtmosphere}
+                senderName={senderName}
+                onSenderNameChange={setSenderName}
+              />
+            </div>
+          )}
+          <div className="flex justify-center">
+            <Button
+              onClick={handleSend}
+              disabled={elements.length === 0}
+              className="px-8 py-5 text-lg font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 gap-2 border-0"
+            >
+              <Send className="w-5 h-5" /> Set Adrift
+            </Button>
           </div>
-        )}
-
-        <div className="p-4 flex justify-center">
-          <Button
-            onClick={handleSend}
-            disabled={elements.length === 0}
-            className="px-8 py-5 text-lg font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl backdrop-blur-sm transition-all hover:scale-105 gap-2 border-0"
-          >
-            <Send className="w-5 h-5" /> Set Adrift
-          </Button>
         </div>
       </div>
     </RiverBackground>

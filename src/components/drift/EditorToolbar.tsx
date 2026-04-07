@@ -2,14 +2,11 @@ import { useState } from 'react';
 import { DriftElement, Atmosphere, STICKERS, ATMOSPHERE_CONFIG, generateId } from '@/lib/drift-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Type, ImagePlus, Smile, Trash2, RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
+import { Type, ImagePlus, Smile } from 'lucide-react';
 
 interface EditorToolbarProps {
   elements: DriftElement[];
   onAddElement: (element: DriftElement) => void;
-  onRemoveElement: (id: string) => void;
-  onUpdateElement: (id: string, updates: Partial<DriftElement>) => void;
-  selectedId: string | null;
   atmosphere: Atmosphere;
   onAtmosphereChange: (a: Atmosphere) => void;
   senderName: string;
@@ -19,9 +16,6 @@ interface EditorToolbarProps {
 const EditorToolbar = ({
   elements,
   onAddElement,
-  onRemoveElement,
-  onUpdateElement,
-  selectedId,
   atmosphere,
   onAtmosphereChange,
   senderName,
@@ -94,10 +88,8 @@ const EditorToolbar = ({
     input.click();
   };
 
-  const selected = elements.find(e => e.id === selectedId);
-
   return (
-    <div className="flex flex-col gap-3 p-4 bg-card/90 backdrop-blur-md rounded-xl border border-border shadow-lg">
+    <div className="flex flex-col gap-3 p-4 bg-card/90 rounded-xl border border-border shadow-lg">
       {/* Element count */}
       <div className="text-xs text-muted-foreground text-center">
         {elements.length}/8 elements
@@ -160,24 +152,6 @@ const EditorToolbar = ({
               {s}
             </button>
           ))}
-        </div>
-      )}
-
-      {/* Selected element controls */}
-      {selected && (
-        <div className="flex gap-2 justify-center items-center border-t border-border pt-2">
-          <Button size="icon" variant="ghost" onClick={() => onUpdateElement(selected.id, { scale: Math.min(selected.scale + 0.1, 3) })}>
-            <ZoomIn className="w-4 h-4" />
-          </Button>
-          <Button size="icon" variant="ghost" onClick={() => onUpdateElement(selected.id, { scale: Math.max(selected.scale - 0.1, 0.3) })}>
-            <ZoomOut className="w-4 h-4" />
-          </Button>
-          <Button size="icon" variant="ghost" onClick={() => onUpdateElement(selected.id, { rotation: selected.rotation + 15 })}>
-            <RotateCw className="w-4 h-4" />
-          </Button>
-          <Button size="icon" variant="ghost" onClick={() => onRemoveElement(selected.id)} className="text-destructive">
-            <Trash2 className="w-4 h-4" />
-          </Button>
         </div>
       )}
 
