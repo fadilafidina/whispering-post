@@ -1,3 +1,5 @@
+import { getDriftFromSupabase, saveDriftToSupabase } from './supabase';
+
 export type Atmosphere = 'rain' | 'sunrise' | 'midnight';
 export type ElementType = 'text' | 'image' | 'sticker';
 
@@ -89,11 +91,27 @@ export async function saveDrift(drift: DriftData): Promise<void> {
     // If still too large, only keep this drift
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ [compressedDrift.id]: compressedDrift }));
   }
+
+  try {
+    await saveDriftToSupabase(compressedDrift);
+  } catch {
+    // Keep UX resilient even if remote save fails
+  }
 }
 
-export function getDrift(id: string): DriftData | null {
+export async function getDrift(id: string): Promise<DriftData | null> {
   const store = getStore();
-  return store[id] || null;
+  if (store[id]) return store[id];
+
+  try {
+    const remoteDrift = await getDriftFromSupabase(id);
+    if (!remoteDrift) return null;
+    store[id] = remoteDrift;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+    return remoteDrift;
+  } catch {
+    return null;
+  }
 }
 
 export function generateId(): string {

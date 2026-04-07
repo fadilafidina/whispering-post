@@ -19,21 +19,32 @@ const OpenDrift = () => {
   const [visibleElements, setVisibleElements] = useState<number>(0);
 
   useEffect(() => {
-    if (!id) {
-      setPhase('expired');
-      return;
-    }
-    const d = getDrift(id);
-    if (!d) {
-      setPhase('expired');
-      return;
-    }
-    if (isDriftExpired(d)) {
-      setPhase('expired');
-      return;
-    }
-    setDrift(d);
-    setPhase('river');
+    let cancelled = false;
+
+    const loadDrift = async () => {
+      if (!id) {
+        setPhase('expired');
+        return;
+      }
+      const d = await getDrift(id);
+      if (cancelled) return;
+      if (!d) {
+        setPhase('expired');
+        return;
+      }
+      if (isDriftExpired(d)) {
+        setPhase('expired');
+        return;
+      }
+      setDrift(d);
+      setPhase('river');
+    };
+
+    loadDrift();
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const handleBottleTap = () => {
