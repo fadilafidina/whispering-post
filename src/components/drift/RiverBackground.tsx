@@ -44,24 +44,28 @@ const RiverBackground = ({ atmosphere, children }: RiverBackgroundProps) => {
     <div
       className={`fixed inset-0 overflow-hidden ${bgClass}`}
       style={!atmosphere ? {
-        background: 'linear-gradient(180deg, hsl(200 50% 55%) 0%, hsl(195 45% 50%) 30%, hsl(200 55% 60%) 60%, hsl(195 40% 65%) 100%)',
+        background: 'linear-gradient(180deg, hsl(38 52% 92%) 0%, hsl(36 45% 88%) 45%, hsl(34 40% 84%) 100%)',
       } : undefined}
     >
-      {/* Animated shimmer layers */}
-      <div className="absolute inset-0 animate-river-flow"
-        style={{
-          background: 'linear-gradient(135deg, hsla(195,50%,60%,0.15) 0%, hsla(200,60%,50%,0.1) 25%, hsla(195,50%,65%,0.15) 50%, hsla(200,55%,55%,0.1) 75%, hsla(195,50%,60%,0.15) 100%)',
-          backgroundSize: '400% 400%',
-        }}
-      />
-      <div className="absolute inset-0 animate-river-shimmer"
-        style={{
-          background: 'radial-gradient(ellipse at 30% 50%, hsla(195,60%,80%,0.2) 0%, transparent 60%), radial-gradient(ellipse at 70% 40%, hsla(200,50%,75%,0.15) 0%, transparent 50%)',
-        }}
-      />
+      {/* Animated shimmer layers for atmosphere scenes only */}
+      {atmosphere && (
+        <>
+          <div className="absolute inset-0 animate-river-flow"
+            style={{
+              background: 'linear-gradient(135deg, hsla(195,50%,60%,0.15) 0%, hsla(200,60%,50%,0.1) 25%, hsla(195,50%,65%,0.15) 50%, hsla(200,55%,55%,0.1) 75%, hsla(195,50%,60%,0.15) 100%)',
+              backgroundSize: '400% 400%',
+            }}
+          />
+          <div className="absolute inset-0 animate-river-shimmer"
+            style={{
+              background: 'radial-gradient(ellipse at 30% 50%, hsla(195,60%,80%,0.2) 0%, transparent 60%), radial-gradient(ellipse at 70% 40%, hsla(200,50%,75%,0.15) 0%, transparent 50%)',
+            }}
+          />
 
-      {/* Stream current lines */}
-      <div className="absolute inset-0 stream-current" />
+          {/* Stream current lines */}
+          <div className="absolute inset-0 stream-current" />
+        </>
+      )}
 
       {/* ===== RAIN EFFECT ===== */}
       {atmosphere === 'rain' && (

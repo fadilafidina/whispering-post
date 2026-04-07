@@ -13,10 +13,10 @@ const Landing = () => {
           <FloatingBottle />
         </div>
 
-        <h1 className="font-heading text-5xl md:text-7xl font-light tracking-wide text-primary-foreground mb-3 drop-shadow-lg">
+        <h1 className="font-heading text-5xl md:text-7xl font-light tracking-wide text-foreground mb-3">
           Drift
         </h1>
-        <p className="font-heading text-xl md:text-2xl font-light italic text-primary-foreground/80 mb-12 text-center max-w-md drop-shadow-md">
+        <p className="font-heading text-xl md:text-2xl font-light italic text-foreground/80 mb-12 text-center max-w-md">
           Send a moment across the water
         </p>
 
@@ -27,7 +27,7 @@ const Landing = () => {
           Create a Drift
         </Button>
 
-        <p className="mt-8 text-sm text-primary-foreground/50 font-body">
+        <p className="mt-8 text-sm text-foreground/65 font-body">
           No account needed · Disappears in 24 hours
         </p>
       </div>
