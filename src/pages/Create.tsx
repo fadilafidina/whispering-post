@@ -1,11 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DriftElement, Atmosphere, saveDrift, generateId } from '@/lib/drift-store';
+import { ambientAudio } from '@/lib/ambient-audio';
 import RiverBackground from '@/components/drift/RiverBackground';
 import DriftCanvas from '@/components/drift/DriftCanvas';
 import EditorToolbar from '@/components/drift/EditorToolbar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Eye, Send } from 'lucide-react';
+import { ArrowLeft, Eye, Send, Volume2, VolumeX } from 'lucide-react';
 
 type SendPhase = 'editing' | 'sealing' | 'floating' | 'done';
 
@@ -19,6 +20,18 @@ const Create = () => {
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [sendPhase, setSendPhase] = useState<SendPhase>('editing');
+  const [muted, setMuted] = useState(false);
+
+  // Play ambient audio when atmosphere changes
+  useEffect(() => {
+    ambientAudio.play(atmosphere);
+    return () => { ambientAudio.stop(); };
+  }, [atmosphere]);
+
+  const toggleMute = () => {
+    const nowMuted = ambientAudio.toggleMute();
+    setMuted(nowMuted);
+  };
 
   const addElement = useCallback((el: DriftElement) => {
     setElements(prev => [...prev, el]);
@@ -125,6 +138,12 @@ const Create = () => {
           </Button>
           <h2 className="font-heading text-xl text-primary-foreground/80 font-light">Create your drift</h2>
           <div className="flex gap-2">
+            <button
+              onClick={toggleMute}
+              className="p-2 rounded-full bg-card/30 backdrop-blur-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+            >
+              {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            </button>
             <Button
               variant="ghost"
               size="sm"
