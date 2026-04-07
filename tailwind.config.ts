@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        heading: ['Cormorant Garamond', 'serif'],
+        body: ['Inter', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +51,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        drift: {
+          river: "hsl(var(--drift-river))",
+          "river-deep": "hsl(var(--drift-river-deep))",
+          sand: "hsl(var(--drift-sand))",
+          foam: "hsl(var(--drift-foam))",
+          midnight: "hsl(var(--drift-midnight))",
+          sunrise: "hsl(var(--drift-sunrise))",
+          rain: "hsl(var(--drift-rain))",
+          bottle: "hsl(var(--drift-bottle))",
+          envelope: "hsl(var(--drift-envelope))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -65,20 +80,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
