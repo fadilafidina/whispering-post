@@ -7,6 +7,8 @@ import EditorToolbar from '@/components/drift/EditorToolbar';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Eye, Send } from 'lucide-react';
 
+type SendPhase = 'editing' | 'sealing' | 'floating' | 'done';
+
 const Create = () => {
   const navigate = useNavigate();
   const [elements, setElements] = useState<DriftElement[]>([]);
@@ -16,6 +18,7 @@ const Create = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [sendPhase, setSendPhase] = useState<SendPhase>('editing');
 
   const addElement = useCallback((el: DriftElement) => {
     setElements(prev => [...prev, el]);
@@ -30,22 +33,34 @@ const Create = () => {
     setElements(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
   }, []);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (elements.length === 0) return;
+
+    // Phase 1: Seal the envelope
+    setSendPhase('sealing');
+
     const id = generateId();
     const drift = {
       id,
       createdAt: Date.now(),
       expiresAt: Date.now() + 24 * 60 * 60 * 1000,
       senderName: senderName.trim() || null,
-      scene: {
-        atmosphere,
-        elements,
-      },
+      scene: { atmosphere, elements },
     };
-    saveDrift(drift);
+
+    await saveDrift(drift);
     const link = `${window.location.origin}/d/${id}`;
-    setGeneratedLink(link);
+
+    // Phase 2: Float the envelope away
+    setTimeout(() => {
+      setSendPhase('floating');
+    }, 700);
+
+    // Phase 3: Show the link
+    setTimeout(() => {
+      setGeneratedLink(link);
+      setSendPhase('done');
+    }, 3400);
   };
 
   const copyLink = async () => {
@@ -55,12 +70,49 @@ const Create = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // ===== SEND ANIMATION PHASES =====
+  if (sendPhase === 'sealing' || sendPhase === 'floating') {
+    return (
+      <RiverBackground atmosphere={atmosphere}>
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
+          {/* Ripple effect under envelope */}
+          {sendPhase === 'floating' && (
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              {[0, 0.3, 0.6].map((delay, i) => (
+                <div
+                  key={i}
+                  className="absolute w-24 h-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 animate-ripple"
+                  style={{
+                    borderColor: 'hsla(195, 60%, 80%, 0.4)',
+                    animationDelay: `${delay}s`,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Envelope */}
+          <div className={`text-8xl ${sendPhase === 'sealing' ? 'animate-envelope-seal' : 'animate-envelope-float-away'}`}>
+            ✉️
+          </div>
+
+          {/* Text */}
+          <p className="mt-8 font-heading text-xl text-primary-foreground/70 italic animate-gentle-pulse">
+            {sendPhase === 'sealing' ? 'Sealing your drift...' : 'Setting adrift...'}
+          </p>
+        </div>
+      </RiverBackground>
+    );
+  }
+
+  // ===== LINK SCREEN =====
   if (generatedLink) {
     return (
       <RiverBackground atmosphere={atmosphere}>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
-          <div className="bg-card/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-border">
-            <h2 className="font-heading text-3xl font-light text-foreground mb-2">Your drift is ready</h2>
+          <div className="bg-card/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-border animate-element-fade-in">
+            <div className="text-5xl mb-4">🌊</div>
+            <h2 className="font-heading text-3xl font-light text-foreground mb-2">Your drift is on its way</h2>
             <p className="text-muted-foreground text-sm mb-6">Share this link — it will float for 24 hours</p>
 
             <div className="bg-muted rounded-lg p-3 mb-4 font-mono text-sm text-foreground break-all">
@@ -80,10 +132,10 @@ const Create = () => {
     );
   }
 
+  // ===== EDITOR =====
   return (
     <RiverBackground atmosphere={atmosphere}>
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header */}
         <div className="flex items-center justify-between p-4">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground gap-1">
             <ArrowLeft className="w-4 h-4" /> Back
@@ -101,7 +153,6 @@ const Create = () => {
           </div>
         </div>
 
-        {/* Canvas area */}
         <div className="flex-1 px-4 pb-4">
           <DriftCanvas
             elements={elements}
@@ -112,7 +163,6 @@ const Create = () => {
           />
         </div>
 
-        {/* Bottom toolbar */}
         {!showPreview && (
           <div className="p-4 max-w-lg mx-auto w-full">
             <EditorToolbar
@@ -129,7 +179,6 @@ const Create = () => {
           </div>
         )}
 
-        {/* Send button */}
         <div className="p-4 flex justify-center">
           <Button
             onClick={handleSend}

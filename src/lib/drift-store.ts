@@ -5,7 +5,7 @@ export interface DriftElement {
   id: string;
   type: ElementType;
   content: string;
-  x: number; // 0-1 normalized
+  x: number;
   y: number;
   scale: number;
   rotation: number;
@@ -34,10 +34,61 @@ function getStore(): Record<string, DriftData> {
   }
 }
 
-export function saveDrift(drift: DriftData): void {
+// Compress images before storing to avoid localStorage quota issues
+function compressDataUrl(dataUrl: string, maxSize = 100000): Promise<string> {
+  return new Promise((resolve) => {
+    if (!dataUrl.startsWith('data:image') || dataUrl.length <= maxSize) {
+      resolve(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      // Scale down to fit
+      const scale = Math.min(1, Math.sqrt(maxSize / dataUrl.length));
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.5));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+export async function saveDrift(drift: DriftData): Promise<void> {
+  // Compress any image elements
+  const compressedElements = await Promise.all(
+    drift.scene.elements.map(async (el) => {
+      if (el.type === 'image') {
+        return { ...el, content: await compressDataUrl(el.content) };
+      }
+      return el;
+    })
+  );
+
+  const compressedDrift = {
+    ...drift,
+    scene: { ...drift.scene, elements: compressedElements },
+  };
+
+  // Clean old expired drifts first
   const store = getStore();
-  store[drift.id] = drift;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  const now = Date.now();
+  for (const key of Object.keys(store)) {
+    if (store[key].expiresAt < now) {
+      delete store[key];
+    }
+  }
+  store[compressedDrift.id] = compressedDrift;
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  } catch {
+    // If still too large, only keep this drift
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ [compressedDrift.id]: compressedDrift }));
+  }
 }
 
 export function getDrift(id: string): DriftData | null {
