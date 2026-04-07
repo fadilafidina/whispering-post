@@ -279,17 +279,24 @@
 /* ===== River stream for send screen ===== */
 @keyframes stream-flow {
   0% { background-position: 0% 0%; }
-  100% { background-position: 100% 100%; }
+  100% { background-position: 200% 200%; }
 }
 
 .stream-current {
-  background: repeating-linear-gradient(
-    -30deg,
-    transparent,
-    transparent 8px,
-    hsla(195, 50%, 70%, 0.08) 8px,
-    hsla(195, 50%, 70%, 0.08) 12px
+  background: radial-gradient(
+    ellipse 120% 8% at 50% 30%,
+    hsla(195, 50%, 75%, 0.06) 0%,
+    transparent 100%
+  ),
+  radial-gradient(
+    ellipse 100% 6% at 40% 60%,
+    hsla(195, 50%, 75%, 0.05) 0%,
+    transparent 100%
+  ),
+  radial-gradient(
+    ellipse 130% 5% at 60% 80%,
+    hsla(195, 50%, 75%, 0.04) 0%,
+    transparent 100%
   );
-  background-size: 200% 200%;
-  animation: stream-flow 4s linear infinite;
+  animation: stream-flow 12s linear infinite;
 }
