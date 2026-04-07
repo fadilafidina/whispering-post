@@ -60,7 +60,7 @@ const Create = () => {
     };
 
     await saveDrift(drift);
-    const link = `${window.location.origin}/d/${id}`;
+    const link = `${window.location.origin}/#/d/${id}`;
 
     setTimeout(() => setSendPhase('floating'), 700);
     setTimeout(() => {

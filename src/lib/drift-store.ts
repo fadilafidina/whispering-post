@@ -104,7 +104,7 @@ export function isDriftExpired(drift: DriftData): boolean {
   return Date.now() > drift.expiresAt;
 }
 
-export const STICKERS = ['🌸', '🦋', '🌊', '✨', '🍃'];
+export const STICKERS = ['🌸', '🍁', '🌙', '🌟', '🌊', '✨', '🍃', '☁️'];
 
 export const ATMOSPHERE_CONFIG: Record<Atmosphere, { label: string; emoji: string; description: string }> = {
   rain: { label: 'Rain', emoji: '🌧️', description: 'Gentle rainfall' },

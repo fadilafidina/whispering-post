@@ -81,7 +81,7 @@ class AmbientAudioManager {
   }
 
   private createBirds(ctx: AudioContext, dest: AudioNode) {
-    // Soft wind base (pink noise)
+    // Very soft "air" bed (filtered pink noise)
     const bufferSize = ctx.sampleRate * 4;
     const buffer = ctx.createBuffer(2, bufferSize, ctx.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
@@ -95,64 +95,87 @@ class AmbientAudioManager {
         b3 = 0.86650 * b3 + w * 0.3104856;
         b4 = 0.55000 * b4 + w * 0.5329522;
         b5 = -0.7616 * b5 - w * 0.0168980;
-        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.05;
+        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.012;
         b6 = w * 0.115926;
       }
     }
     const windSrc = ctx.createBufferSource();
     windSrc.buffer = buffer;
     windSrc.loop = true;
+    const windHp = ctx.createBiquadFilter();
+    windHp.type = 'highpass';
+    windHp.frequency.value = 450;
+    windHp.Q.value = 0.4;
+    const windLp = ctx.createBiquadFilter();
+    windLp.type = 'lowpass';
+    windLp.frequency.value = 3200;
+    windLp.Q.value = 0.35;
     const windGain = ctx.createGain();
-    windGain.gain.value = 0.25;
-    windSrc.connect(windGain);
+    windGain.gain.value = 0.04;
+    windSrc.connect(windHp);
+    windHp.connect(windLp);
+    windLp.connect(windGain);
     windGain.connect(dest);
     windSrc.start();
-    this.nodes.push(windSrc, windGain);
+    this.nodes.push(windSrc, windHp, windLp, windGain);
 
     // Bird chirp synthesizer
     const birdGain = ctx.createGain();
-    birdGain.gain.value = 0.12;
+    birdGain.gain.value = 0.2;
     birdGain.connect(dest);
     this.nodes.push(birdGain);
 
     const chirp = () => {
       const now = ctx.currentTime;
-      const baseFreq = 2000 + Math.random() * 3000;
-      const notes = 2 + Math.floor(Math.random() * 4);
+      const baseFreq = 1700 + Math.random() * 2600;
+      const notes = 2 + Math.floor(Math.random() * 3);
 
       for (let n = 0; n < notes; n++) {
         const startTime = now + n * (0.08 + Math.random() * 0.06);
-        const duration = 0.04 + Math.random() * 0.06;
+        const duration = 0.06 + Math.random() * 0.08;
         
         const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        const noteFreq = baseFreq + (Math.random() - 0.5) * 800;
+        osc.type = Math.random() < 0.5 ? 'triangle' : 'sine';
+        const noteFreq = baseFreq + (Math.random() - 0.5) * 900;
         osc.frequency.setValueAtTime(noteFreq, startTime);
         osc.frequency.exponentialRampToValueAtTime(
-          noteFreq * (0.8 + Math.random() * 0.4),
+          noteFreq * (1.08 + Math.random() * 0.35),
           startTime + duration
         );
 
         const env = ctx.createGain();
         env.gain.setValueAtTime(0, startTime);
-        env.gain.linearRampToValueAtTime(0.3 + Math.random() * 0.3, startTime + duration * 0.15);
+        env.gain.linearRampToValueAtTime(0.14 + Math.random() * 0.14, startTime + duration * 0.18);
         env.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
 
         const pan = ctx.createStereoPanner();
         pan.pan.value = Math.random() * 2 - 1;
 
+        const chirpFilter = ctx.createBiquadFilter();
+        chirpFilter.type = 'bandpass';
+        chirpFilter.frequency.value = noteFreq;
+        chirpFilter.Q.value = 8;
+
         osc.connect(env);
-        env.connect(pan);
+        env.connect(chirpFilter);
+        chirpFilter.connect(pan);
         pan.connect(birdGain);
         osc.start(startTime);
         osc.stop(startTime + duration + 0.01);
+
+        this.nodes.push(env, pan, chirpFilter, osc);
       }
     };
 
-    const id = window.setInterval(() => {
-      if (Math.random() < 0.3) chirp();
-    }, 800 + Math.random() * 1500);
-    this.intervals.push(id);
+    // Kick off immediately so sunrise is not perceived as static
+    chirp();
+    const id1 = window.setInterval(() => {
+      if (Math.random() < 0.65) chirp();
+    }, 900);
+    const id2 = window.setInterval(() => {
+      if (Math.random() < 0.45) chirp();
+    }, 1700);
+    this.intervals.push(id1, id2);
   }
 
   private createCrickets(ctx: AudioContext, dest: AudioNode) {

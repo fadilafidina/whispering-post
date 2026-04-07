@@ -17,7 +17,10 @@ const OpenDrift = () => {
   const [visibleElements, setVisibleElements] = useState<number>(0);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setPhase('expired');
+      return;
+    }
     const d = getDrift(id);
     if (!d) {
       setPhase('expired');
