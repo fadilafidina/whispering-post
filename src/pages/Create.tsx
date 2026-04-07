@@ -1,11 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DriftElement, Atmosphere, saveDrift, generateId } from '@/lib/drift-store';
+import { ambientAudio } from '@/lib/ambient-audio';
 import RiverBackground from '@/components/drift/RiverBackground';
 import DriftCanvas from '@/components/drift/DriftCanvas';
 import EditorToolbar from '@/components/drift/EditorToolbar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Eye, Send } from 'lucide-react';
+import { ArrowLeft, Eye, Send, Volume2, VolumeX } from 'lucide-react';
 
 type SendPhase = 'editing' | 'sealing' | 'floating' | 'done';
 
