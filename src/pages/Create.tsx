@@ -93,7 +93,7 @@ const Create = () => {
             </div>
           )}
           <div className={`text-8xl ${sendPhase === 'sealing' ? 'animate-envelope-seal' : 'animate-envelope-float-away'}`}>
-            ✉️
+            💌
           </div>
           <p className="mt-8 font-heading text-xl text-primary-foreground/70 italic animate-gentle-pulse">
             {sendPhase === 'sealing' ? 'Sealing your drift...' : 'Setting adrift...'}

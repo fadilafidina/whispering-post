@@ -75,7 +75,7 @@ const DriftCanvas = ({ elements, onUpdateElement, onRemoveElement, onSelectEleme
       transition: isViewMode ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' : (isDraggingThis ? 'none' : 'opacity 0.2s ease'),
     };
 
-    const hoverClass = isViewMode ? 'drift-element-alive' : '';
+    const hoverClass = isViewMode ? 'drift-element-alive drift-element-reveal' : '';
 
     let content: React.ReactNode;
     switch (el.type) {

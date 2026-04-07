@@ -374,3 +374,33 @@
 .drift-element-alive:hover:nth-child(even) {
   transform: scale(1.08) rotate(-2deg) !important;
 }
+
+@keyframes drift-element-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drift-element-reveal {
+  animation: drift-element-slide-up 0.55s ease-out both;
+}
+
+@keyframes app-page-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app-page-transition {
+  animation: app-page-fade 0.35s ease-out both;
+}

@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getDrift, isDriftExpired, DriftData } from '@/lib/drift-store';
 import { ambientAudio } from '@/lib/ambient-audio';
 import RiverBackground from '@/components/drift/RiverBackground';
 import FloatingBottle from '@/components/drift/FloatingBottle';
 import DriftCanvas from '@/components/drift/DriftCanvas';
 import { Volume2, VolumeX } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type Phase = 'loading' | 'river' | 'opening' | 'revealed' | 'expired';
 
 const OpenDrift = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [drift, setDrift] = useState<DriftData | null>(null);
   const [phase, setPhase] = useState<Phase>('loading');
@@ -74,6 +76,12 @@ const OpenDrift = () => {
           <p className="text-primary-foreground/50 text-sm font-body max-w-xs">
             Like all things, it was beautiful because it was fleeting.
           </p>
+          <Button
+            onClick={() => navigate('/create')}
+            className="mt-8 px-8 py-5 text-lg font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 border-0"
+          >
+            Create another drift
+          </Button>
         </div>
       </RiverBackground>
     );
@@ -102,7 +110,7 @@ const OpenDrift = () => {
           </p>
           <FloatingBottle onClick={handleBottleTap} driftIn />
           <p className="mt-8 text-primary-foreground/40 text-sm font-body">
-            Tap the bottle
+            Click to open
           </p>
         </div>
       </RiverBackground>
@@ -115,7 +123,7 @@ const OpenDrift = () => {
       <RiverBackground atmosphere={drift.scene.atmosphere}>
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="animate-envelope-open text-8xl">
-            ✉️
+            💌
           </div>
         </div>
       </RiverBackground>
@@ -149,14 +157,19 @@ const OpenDrift = () => {
           />
         </div>
 
-        {/* Sender name */}
-        {drift.senderName && (
-          <div className="text-center pb-8 animate-element-fade-in" style={{ animationDelay: `${drift.scene.elements.length * 200 + 300}ms`, animationFillMode: 'forwards' }}>
-            <p className="font-heading text-lg text-primary-foreground/70 italic">
+        <div className="text-center pb-8 animate-element-fade-in" style={{ animationDelay: `${drift.scene.elements.length * 200 + 300}ms`, animationFillMode: 'forwards' }}>
+          {drift.senderName && (
+            <p className="font-heading text-lg text-primary-foreground/70 italic mb-4">
               From {drift.senderName}
             </p>
-          </div>
-        )}
+          )}
+          <Button
+            onClick={() => navigate('/create')}
+            className="px-8 py-5 text-lg font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 border-0"
+          >
+            Create another drift
+          </Button>
+        </div>
       </div>
     </RiverBackground>
   );
