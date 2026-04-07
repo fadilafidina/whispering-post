@@ -8,35 +8,25 @@
   :root {
     --background: 200 25% 96%;
     --foreground: 210 30% 15%;
-
     --card: 200 20% 98%;
     --card-foreground: 210 30% 15%;
-
     --popover: 200 20% 98%;
     --popover-foreground: 210 30% 15%;
-
     --primary: 195 60% 42%;
     --primary-foreground: 200 25% 98%;
-
     --secondary: 30 50% 90%;
     --secondary-foreground: 25 40% 30%;
-
     --muted: 200 15% 92%;
     --muted-foreground: 210 10% 50%;
-
     --accent: 35 70% 65%;
     --accent-foreground: 30 50% 15%;
-
     --destructive: 0 60% 50%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 200 20% 88%;
     --input: 200 20% 88%;
     --ring: 195 60% 42%;
-
     --radius: 0.75rem;
 
-    /* Drift-specific tokens */
     --drift-river: 200 50% 55%;
     --drift-river-deep: 210 60% 30%;
     --drift-sand: 38 40% 85%;
@@ -77,110 +67,229 @@
   }
 }
 
-/* River Animation */
+/* ===== River ===== */
 @keyframes river-flow {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-
 @keyframes river-shimmer {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.6; }
 }
+.animate-river-flow {
+  animation: river-flow 15s ease-in-out infinite;
+  background-size: 400% 400%;
+}
+.animate-river-shimmer {
+  animation: river-shimmer 4s ease-in-out infinite;
+}
 
+/* ===== Bottle ===== */
 @keyframes bottle-float {
   0%, 100% { transform: translateY(0) rotate(-3deg); }
   25% { transform: translateY(-12px) rotate(2deg); }
   50% { transform: translateY(-5px) rotate(-1deg); }
   75% { transform: translateY(-15px) rotate(3deg); }
 }
-
 @keyframes bottle-drift-in {
   0% { transform: translateX(120vw) translateY(0) rotate(-5deg); opacity: 0; }
   20% { opacity: 1; }
   100% { transform: translateX(0) translateY(0) rotate(-3deg); }
 }
+.animate-bottle-float {
+  animation: bottle-float 4s ease-in-out infinite;
+}
+.animate-bottle-drift-in {
+  animation: bottle-drift-in 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
 
+/* ===== Envelope ===== */
 @keyframes envelope-open {
   0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
   60% { transform: scale(1.05) rotate(1deg); opacity: 1; }
   100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
-
-@keyframes element-fade-in {
-  0% { opacity: 0; transform: translateY(15px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes gentle-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-@keyframes rain-fall {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 20% 100%; }
-}
-
-@keyframes stars-twinkle {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-@keyframes sunrise-glow {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.8; }
-}
-
-.animate-river-flow {
-  animation: river-flow 15s ease-in-out infinite;
-  background-size: 400% 400%;
-}
-
-.animate-river-shimmer {
-  animation: river-shimmer 4s ease-in-out infinite;
-}
-
-.animate-bottle-float {
-  animation: bottle-float 4s ease-in-out infinite;
-}
-
-.animate-bottle-drift-in {
-  animation: bottle-drift-in 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
 .animate-envelope-open {
   animation: envelope-open 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* ===== Element fade-in ===== */
+@keyframes element-fade-in {
+  0% { opacity: 0; transform: translateY(15px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
 .animate-element-fade-in {
   animation: element-fade-in 0.6s ease-out forwards;
   opacity: 0;
 }
 
+/* ===== Gentle pulse ===== */
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
 .animate-gentle-pulse {
   animation: gentle-pulse 3s ease-in-out infinite;
 }
 
-/* Atmosphere backgrounds */
+/* ===== Atmosphere backgrounds ===== */
 .atmosphere-rain {
-  background: linear-gradient(180deg, hsl(210 30% 40%) 0%, hsl(210 35% 55%) 50%, hsl(200 25% 65%) 100%);
+  background: linear-gradient(180deg, hsl(210 30% 35%) 0%, hsl(210 35% 50%) 50%, hsl(200 25% 60%) 100%);
 }
-
 .atmosphere-sunrise {
   background: linear-gradient(180deg, hsl(220 40% 30%) 0%, hsl(30 60% 55%) 40%, hsl(40 80% 70%) 70%, hsl(45 90% 80%) 100%);
 }
-
 .atmosphere-midnight {
   background: linear-gradient(180deg, hsl(230 40% 8%) 0%, hsl(240 35% 15%) 50%, hsl(250 30% 22%) 100%);
 }
 
-/* Rain overlay */
-.rain-overlay {
-  background-image: 
-    linear-gradient(transparent 90%, hsla(200, 30%, 80%, 0.15) 90%),
-    linear-gradient(90deg, transparent 95%, hsla(200, 30%, 80%, 0.08) 95%);
-  background-size: 3px 20px, 15px 3px;
-  animation: rain-fall 0.5s linear infinite;
+/* ===== RAIN — real falling drops ===== */
+@keyframes raindrop-fall {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.5; }
+  100% {
+    transform: translateY(110vh) translateX(-15px);
+    opacity: 0;
+  }
+}
+
+.rain-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.raindrop {
+  position: absolute;
+  top: -20px;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, hsla(200, 60%, 85%, 0.6), hsla(200, 50%, 90%, 0.2));
+  border-radius: 0 0 2px 2px;
+  animation: raindrop-fall linear infinite;
+}
+
+/* ===== SUNRISE — sunrays ===== */
+@keyframes sunray-pulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes sun-rise {
+  0% { transform: translateY(30%) scale(0.8); opacity: 0.4; }
+  100% { transform: translateY(0%) scale(1); opacity: 1; }
+}
+
+.sunrise-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sun-orb {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsla(45, 100%, 75%, 0.9) 0%, hsla(35, 90%, 60%, 0.5) 50%, transparent 70%);
+  animation: sun-rise 3s ease-out forwards;
+  filter: blur(2px);
+}
+
+.sunray {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  width: 3px;
+  transform-origin: bottom center;
+  background: linear-gradient(to top, hsla(40, 90%, 70%, 0.5), hsla(45, 100%, 85%, 0.1), transparent);
+  animation: sunray-pulse 3s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+/* ===== MIDNIGHT — twinkling stars ===== */
+@keyframes stars-twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* ===== Envelope send animation ===== */
+@keyframes envelope-seal {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; }
+  40% { transform: scale(0.85) rotate(-3deg); opacity: 1; }
+  60% { transform: scale(0.9) rotate(2deg); opacity: 1; }
+  100% { transform: scale(0.8) rotate(0deg); opacity: 1; }
+}
+
+@keyframes envelope-float-away {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.8);
+    opacity: 1;
+  }
+  20% {
+    transform: translate(5vw, 5vh) rotate(-5deg) scale(0.75);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(15vw, 15vh) rotate(3deg) scale(0.65);
+    opacity: 0.9;
+  }
+  80% {
+    transform: translate(40vw, 35vh) rotate(-8deg) scale(0.45);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(70vw, 60vh) rotate(-12deg) scale(0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes ripple-expand {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.animate-envelope-seal {
+  animation: envelope-seal 0.6s ease-out forwards;
+}
+
+.animate-envelope-float-away {
+  animation: envelope-float-away 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-ripple {
+  animation: ripple-expand 1.5s ease-out forwards;
+}
+
+/* ===== River stream for send screen ===== */
+@keyframes stream-flow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+.stream-current {
+  background: repeating-linear-gradient(
+    -30deg,
+    transparent,
+    transparent 8px,
+    hsla(195, 50%, 70%, 0.08) 8px,
+    hsla(195, 50%, 70%, 0.08) 12px
+  );
+  background-size: 200% 200%;
+  animation: stream-flow 4s linear infinite;
 }
