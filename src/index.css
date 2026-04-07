@@ -300,3 +300,15 @@
   );
   animation: stream-flow 12s linear infinite;
 }
+
+/* ===== Drift element hover — alive feel ===== */
+.drift-element-alive {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+.drift-element-alive:hover {
+  transform: scale(1.08) rotate(2deg) !important;
+  filter: brightness(1.05);
+}
+.drift-element-alive:hover:nth-child(even) {
+  transform: scale(1.08) rotate(-2deg) !important;
+}
