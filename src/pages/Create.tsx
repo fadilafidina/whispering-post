@@ -138,6 +138,12 @@ const Create = () => {
           </Button>
           <h2 className="font-heading text-xl text-primary-foreground/80 font-light">Create your drift</h2>
           <div className="flex gap-2">
+            <button
+              onClick={toggleMute}
+              className="p-2 rounded-full bg-card/30 backdrop-blur-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
+            >
+              {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            </button>
             <Button
               variant="ghost"
               size="sm"
