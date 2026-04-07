@@ -1,0 +1,217 @@
+import { useState } from 'react';
+import { DriftElement, Atmosphere, STICKERS, ATMOSPHERE_CONFIG, generateId } from '@/lib/drift-store';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Type, ImagePlus, Smile, Trash2, RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
+
+interface EditorToolbarProps {
+  elements: DriftElement[];
+  onAddElement: (element: DriftElement) => void;
+  onRemoveElement: (id: string) => void;
+  onUpdateElement: (id: string, updates: Partial<DriftElement>) => void;
+  selectedId: string | null;
+  atmosphere: Atmosphere;
+  onAtmosphereChange: (a: Atmosphere) => void;
+  senderName: string;
+  onSenderNameChange: (name: string) => void;
+}
+
+const EditorToolbar = ({
+  elements,
+  onAddElement,
+  onRemoveElement,
+  onUpdateElement,
+  selectedId,
+  atmosphere,
+  onAtmosphereChange,
+  senderName,
+  onSenderNameChange,
+}: EditorToolbarProps) => {
+  const [textInput, setTextInput] = useState('');
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [showStickers, setShowStickers] = useState(false);
+
+  const canAddMore = elements.length < 8;
+  const imageCount = elements.filter(e => e.type === 'image').length;
+
+  const addText = () => {
+    if (!textInput.trim() || !canAddMore) return;
+    onAddElement({
+      id: generateId(),
+      type: 'text',
+      content: textInput.trim(),
+      x: 0.3 + Math.random() * 0.3,
+      y: 0.3 + Math.random() * 0.3,
+      scale: 1,
+      rotation: Math.random() * 6 - 3,
+      zIndex: elements.length,
+      opacity: 1,
+    });
+    setTextInput('');
+    setShowTextInput(false);
+  };
+
+  const addSticker = (sticker: string) => {
+    if (!canAddMore) return;
+    onAddElement({
+      id: generateId(),
+      type: 'sticker',
+      content: sticker,
+      x: 0.2 + Math.random() * 0.5,
+      y: 0.2 + Math.random() * 0.5,
+      scale: 1,
+      rotation: Math.random() * 20 - 10,
+      zIndex: elements.length,
+      opacity: 1,
+    });
+    setShowStickers(false);
+  };
+
+  const addImage = () => {
+    if (!canAddMore || imageCount >= 2) return;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        onAddElement({
+          id: generateId(),
+          type: 'image',
+          content: ev.target?.result as string,
+          x: 0.2 + Math.random() * 0.4,
+          y: 0.2 + Math.random() * 0.4,
+          scale: 1,
+          rotation: Math.random() * 6 - 3,
+          zIndex: elements.length,
+          opacity: 1,
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  };
+
+  const selected = elements.find(e => e.id === selectedId);
+
+  return (
+    <div className="flex flex-col gap-3 p-4 bg-card/90 backdrop-blur-md rounded-xl border border-border shadow-lg">
+      {/* Element count */}
+      <div className="text-xs text-muted-foreground text-center">
+        {elements.length}/8 elements
+      </div>
+
+      {/* Add elements */}
+      <div className="flex gap-2 justify-center">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => { setShowTextInput(!showTextInput); setShowStickers(false); }}
+          disabled={!canAddMore}
+          className="gap-1"
+        >
+          <Type className="w-4 h-4" /> Text
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={addImage}
+          disabled={!canAddMore || imageCount >= 2}
+          className="gap-1"
+        >
+          <ImagePlus className="w-4 h-4" /> Image
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => { setShowStickers(!showStickers); setShowTextInput(false); }}
+          disabled={!canAddMore}
+          className="gap-1"
+        >
+          <Smile className="w-4 h-4" /> Sticker
+        </Button>
+      </div>
+
+      {/* Text input */}
+      {showTextInput && (
+        <div className="flex gap-2">
+          <Input
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            placeholder="Write something poetic..."
+            className="text-sm"
+            onKeyDown={(e) => e.key === 'Enter' && addText()}
+          />
+          <Button size="sm" onClick={addText} disabled={!textInput.trim()}>Add</Button>
+        </div>
+      )}
+
+      {/* Stickers */}
+      {showStickers && (
+        <div className="flex gap-2 justify-center">
+          {STICKERS.map((s) => (
+            <button
+              key={s}
+              onClick={() => addSticker(s)}
+              className="text-2xl hover:scale-125 transition-transform p-1"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Selected element controls */}
+      {selected && (
+        <div className="flex gap-2 justify-center items-center border-t border-border pt-2">
+          <Button size="icon" variant="ghost" onClick={() => onUpdateElement(selected.id, { scale: Math.min(selected.scale + 0.1, 3) })}>
+            <ZoomIn className="w-4 h-4" />
+          </Button>
+          <Button size="icon" variant="ghost" onClick={() => onUpdateElement(selected.id, { scale: Math.max(selected.scale - 0.1, 0.3) })}>
+            <ZoomOut className="w-4 h-4" />
+          </Button>
+          <Button size="icon" variant="ghost" onClick={() => onUpdateElement(selected.id, { rotation: selected.rotation + 15 })}>
+            <RotateCw className="w-4 h-4" />
+          </Button>
+          <Button size="icon" variant="ghost" onClick={() => onRemoveElement(selected.id)} className="text-destructive">
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* Atmosphere */}
+      <div className="border-t border-border pt-3">
+        <p className="text-xs text-muted-foreground mb-2 text-center">Atmosphere</p>
+        <div className="flex gap-2 justify-center">
+          {(Object.keys(ATMOSPHERE_CONFIG) as Atmosphere[]).map((a) => (
+            <button
+              key={a}
+              onClick={() => onAtmosphereChange(a)}
+              className={`px-3 py-1.5 rounded-full text-sm transition-all ${
+                atmosphere === a
+                  ? 'bg-primary text-primary-foreground shadow-md'
+                  : 'bg-muted text-muted-foreground hover:bg-accent'
+              }`}
+            >
+              {ATMOSPHERE_CONFIG[a].emoji} {ATMOSPHERE_CONFIG[a].label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Sender name */}
+      <div className="border-t border-border pt-3">
+        <Input
+          value={senderName}
+          onChange={(e) => onSenderNameChange(e.target.value)}
+          placeholder="Your name (optional)"
+          className="text-sm text-center"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default EditorToolbar;
