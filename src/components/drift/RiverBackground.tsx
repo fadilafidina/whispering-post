@@ -1,5 +1,5 @@
 import { Atmosphere } from '@/lib/drift-store';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 interface RiverBackgroundProps {
   atmosphere?: Atmosphere;
@@ -8,6 +8,11 @@ interface RiverBackgroundProps {
 
 const RiverBackground = ({ atmosphere, children }: RiverBackgroundProps) => {
   const bgClass = atmosphere ? `atmosphere-${atmosphere}` : '';
+  const [pointer, setPointer] = useState<{ x: number; y: number; active: boolean }>({
+    x: 0,
+    y: 0,
+    active: false,
+  });
 
   const raindrops = useMemo(() => {
     return Array.from({ length: 60 }).map(() => ({
@@ -40,12 +45,33 @@ const RiverBackground = ({ atmosphere, children }: RiverBackgroundProps) => {
     }));
   }, []);
 
+  const getRepel = (leftPct: number, topPct: number, strength: number) => {
+    if (!pointer.active) return { x: 0, y: 0 };
+    const dx = leftPct - pointer.x;
+    const dy = topPct - pointer.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 0.0001;
+    const influence = Math.max(0, 1 - dist / 28);
+    return {
+      x: (dx / dist) * influence * strength,
+      y: (dy / dist) * influence * strength,
+    };
+  };
+
   return (
     <div
       className={`fixed inset-0 overflow-hidden ${bgClass}`}
       style={!atmosphere ? {
         background: 'linear-gradient(180deg, hsl(38 52% 92%) 0%, hsl(36 45% 88%) 45%, hsl(34 40% 84%) 100%)',
       } : undefined}
+      onMouseMove={(e) => {
+        const target = e.currentTarget.getBoundingClientRect();
+        setPointer({
+          x: ((e.clientX - target.left) / target.width) * 100,
+          y: ((e.clientY - target.top) / target.height) * 100,
+          active: true,
+        });
+      }}
+      onMouseLeave={() => setPointer((prev) => ({ ...prev, active: false }))}
     >
       {/* Animated shimmer layers for atmosphere scenes only */}
       {atmosphere && (
@@ -71,6 +97,10 @@ const RiverBackground = ({ atmosphere, children }: RiverBackgroundProps) => {
       {atmosphere === 'rain' && (
         <div className="rain-container">
           {raindrops.map((drop, i) => (
+            (() => {
+              const left = parseFloat(drop.left);
+              const repel = getRepel(left, 55, 18);
+              return (
             <div
               key={i}
               className="raindrop"
@@ -80,8 +110,12 @@ const RiverBackground = ({ atmosphere, children }: RiverBackgroundProps) => {
                 animationDuration: `${drop.duration}s`,
                 animationDelay: `${drop.delay}s`,
                 opacity: drop.opacity,
+                transform: `translate(${repel.x}px, ${repel.y * 0.35}px)`,
+                transition: 'transform 140ms ease-out',
               }}
             />
+              );
+            })()
           ))}
         </div>
       )}
@@ -115,6 +149,14 @@ const RiverBackground = ({ atmosphere, children }: RiverBackgroundProps) => {
       {atmosphere === 'midnight' && (
         <div className="absolute inset-0 pointer-events-none">
           {stars.map((star, i) => (
+            (() => {
+              const left = parseFloat(star.left);
+              const top = parseFloat(star.top);
+              const repel = getRepel(left, top, 12);
+              const pulseBoost = pointer.active
+                ? Math.max(0, 1 - Math.sqrt((left - pointer.x) ** 2 + (top - pointer.y) ** 2) / 30) * 0.35
+                : 0;
+              return (
             <div
               key={i}
               className="absolute rounded-full"
@@ -127,8 +169,12 @@ const RiverBackground = ({ atmosphere, children }: RiverBackgroundProps) => {
                 boxShadow: `0 0 ${star.size * 2}px hsla(220, 80%, 90%, 0.5)`,
                 animation: `stars-twinkle ${star.duration}s ease-in-out infinite`,
                 animationDelay: `${star.delay}s`,
+                transform: `translate(${repel.x}px, ${repel.y}px) scale(${1 + pulseBoost})`,
+                transition: 'transform 180ms ease-out',
               }}
             />
+              );
+            })()
           ))}
         </div>
       )}
