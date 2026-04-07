@@ -49,6 +49,7 @@ const DriftCanvas = ({ elements, onUpdateElement, onSelectElement, selectedId, e
 
   const renderElement = (el: DriftElement) => {
     const isSelected = selectedId === el.id && editable;
+    const isViewMode = !editable;
     const style: React.CSSProperties = {
       position: 'absolute',
       left: `${el.x * 100}%`,
@@ -58,13 +59,16 @@ const DriftCanvas = ({ elements, onUpdateElement, onSelectElement, selectedId, e
       opacity: el.opacity,
       cursor: editable ? 'grab' : 'default',
       touchAction: 'none',
+      transition: isViewMode ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' : undefined,
     };
+
+    const hoverClass = isViewMode ? 'drift-element-alive' : '';
 
     let content: React.ReactNode;
     switch (el.type) {
       case 'text':
         content = (
-          <div className="max-w-[200px] px-3 py-2 rounded-lg bg-card/80 backdrop-blur-sm text-card-foreground font-body text-sm leading-relaxed">
+          <div className="max-w-[200px] px-3 py-2 rounded-lg bg-card/80 text-shadow-sm text-card-foreground font-body text-sm leading-relaxed">
             {el.content}
           </div>
         );
@@ -88,7 +92,7 @@ const DriftCanvas = ({ elements, onUpdateElement, onSelectElement, selectedId, e
         key={el.id}
         style={style}
         onPointerDown={(e) => handlePointerDown(e, el)}
-        className={`${isSelected ? 'ring-2 ring-primary ring-offset-2 rounded-lg' : ''}`}
+        className={`${isSelected ? 'ring-2 ring-primary ring-offset-2 rounded-lg' : ''} ${hoverClass}`}
       >
         {content}
       </div>
