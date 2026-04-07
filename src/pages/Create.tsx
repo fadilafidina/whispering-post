@@ -20,6 +20,18 @@ const Create = () => {
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [sendPhase, setSendPhase] = useState<SendPhase>('editing');
+  const [muted, setMuted] = useState(false);
+
+  // Play ambient audio when atmosphere changes
+  useEffect(() => {
+    ambientAudio.play(atmosphere);
+    return () => { ambientAudio.stop(); };
+  }, [atmosphere]);
+
+  const toggleMute = () => {
+    const nowMuted = ambientAudio.toggleMute();
+    setMuted(nowMuted);
+  };
 
   const addElement = useCallback((el: DriftElement) => {
     setElements(prev => [...prev, el]);
