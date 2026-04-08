@@ -30,6 +30,9 @@ const Landing = () => {
         <p className="mt-8 text-sm text-foreground/65 font-body">
           send it along · disappears in 24 hours
         </p>
+        <p className="mt-8 text-sm text-foreground/65 font-body">
+          {'˗ˏˋ ꒰ made with ෆ by dila ꒱ ˎˊ˗`'}
+        </p>
       </div>
     </RiverBackground>
   );

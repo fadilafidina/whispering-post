@@ -173,14 +173,14 @@ const OpenDrift = () => {
         <div className="text-center pb-8 animate-element-fade-in" style={{ animationDelay: `${drift.scene.elements.length * 200 + 300}ms`, animationFillMode: 'forwards' }}>
           {drift.senderName && (
             <p className="font-heading text-xl text-primary-foreground/70 italic mb-4">
-              from {drift.senderName} ˗ˏˋ ꒰ ✉︎ ꒱ ˎˊ˗
+              from {drift.senderName}
             </p>
           )}
           <Button
             onClick={() => navigate('/create')}
             className="px-8 py-5 text-xl font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 border-0"
           >
-            create another drift ✉︎ᯓᡣ𐭩
+            create another drift
           </Button>
         </div>
       </div>
