@@ -145,7 +145,7 @@ const DriftCanvas = ({ elements, onUpdateElement, onRemoveElement, onSelectEleme
   return (
     <div
       ref={canvasRef}
-      className="relative w-full h-full rounded-xl overflow-hidden"
+      className="relative h-0 min-h-0 w-full flex-1 rounded-xl overflow-hidden"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onClick={() => onSelectElement(null)}

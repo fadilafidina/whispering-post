@@ -130,9 +130,9 @@ const Create = () => {
   // ===== EDITOR =====
   return (
     <RiverBackground atmosphere={atmosphere}>
-      <div className="relative z-10 h-screen">
+      <div className="relative z-10 flex h-dvh max-h-dvh min-h-0 flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-3 shrink-0">
+        <div className="flex items-center justify-between p-3 pt-[max(0.75rem,env(safe-area-inset-top))] shrink-0">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground gap-1">
             <ArrowLeft className="w-4 h-4" /> Back
           </Button>
@@ -155,8 +155,8 @@ const Create = () => {
           </div>
         </div>
 
-        {/* Canvas leaves room for fixed bottom controls */}
-        <div className="px-3 pb-[340px] h-[calc(100vh-72px)] min-h-[320px]">
+        {/* flex-1 + min-h-0 so canvas gets real height (Safari); dock is fixed, no huge padding */}
+        <div className="flex min-h-0 flex-1 flex-col px-3">
           <DriftCanvas
             elements={elements}
             onUpdateElement={updateElement}
@@ -167,10 +167,10 @@ const Create = () => {
           />
         </div>
 
-        {/* Toolbar + Send — fixed at viewport bottom */}
-        <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 space-y-2">
+        {/* Toolbar + Send — fixed to real viewport bottom (Safari iOS safe area) */}
+        <div className="fixed inset-x-0 bottom-0 z-50 flex max-h-[min(52vh,420px)] flex-col gap-2 border-t border-border/30 bg-background/85 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md">
           {!showPreview && (
-            <div className="max-w-lg mx-auto w-full">
+            <div className="max-h-[min(38vh,320px)] min-h-0 w-full max-w-lg mx-auto overflow-y-auto overscroll-contain">
               <EditorToolbar
                 elements={elements}
                 onAddElement={addElement}
@@ -181,11 +181,11 @@ const Create = () => {
               />
             </div>
           )}
-          <div className="flex justify-center">
+          <div className="flex shrink-0 justify-center pb-0.5">
             <Button
               onClick={handleSend}
               disabled={elements.length === 0}
-              className="px-8 py-5 text-lg font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 gap-2 border-0"
+              className="w-full max-w-sm px-6 py-4 text-base font-heading sm:w-auto sm:px-8 sm:py-5 sm:text-lg rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] gap-2 border-0"
             >
               <Send className="w-5 h-5" /> Set Adrift
             </Button>

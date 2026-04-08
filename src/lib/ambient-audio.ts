@@ -43,12 +43,15 @@ class AmbientAudioManager {
     hp.type = 'highpass';
     hp.frequency.value = 200;
     hp.Q.value = 0.3;
+    const rainGain = ctx.createGain();
+    rainGain.gain.value = 0.22;
 
     src.connect(bp);
     bp.connect(hp);
-    hp.connect(dest);
+    hp.connect(rainGain);
+    rainGain.connect(dest);
     src.start();
-    this.nodes.push(src, bp, hp);
+    this.nodes.push(src, bp, hp, rainGain);
 
     // Intermittent drip/patter layer
     const dripBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.08, ctx.sampleRate);
@@ -59,7 +62,7 @@ class AmbientAudioManager {
     }
 
     const dripGain = ctx.createGain();
-    dripGain.gain.value = 0.15;
+    dripGain.gain.value = 0.09;
     dripGain.connect(dest);
     this.nodes.push(dripGain);
 

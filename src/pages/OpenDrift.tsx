@@ -144,7 +144,7 @@ const OpenDrift = () => {
   // Revealed
   return (
     <RiverBackground atmosphere={drift.scene.atmosphere}>
-      <div className="relative z-10 flex flex-col h-screen">
+      <div className="relative z-10 flex min-h-0 flex-col h-dvh max-h-dvh">
         {/* Mute toggle */}
         <div className="absolute top-4 right-4 z-20">
           <button
@@ -156,7 +156,7 @@ const OpenDrift = () => {
         </div>
 
         {/* Canvas with staggered elements */}
-        <div className="flex-1 p-4 min-h-0">
+        <div className="flex min-h-0 flex-1 flex-col p-4">
           <DriftCanvas
             elements={drift.scene.elements.slice(0, visibleElements).map((el) => ({
               ...el,

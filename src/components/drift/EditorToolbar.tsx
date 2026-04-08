@@ -84,7 +84,7 @@ const EditorToolbar = ({
   };
 
   return (
-    <div className="flex flex-col gap-3 p-4 min-h-[300px] bg-card/90 rounded-xl border border-border shadow-lg">
+    <div className="flex flex-col gap-3 p-4 min-h-0 md:min-h-[240px] bg-card/90 rounded-xl border border-border shadow-lg">
       {/* Element count */}
       <div className="text-xs text-muted-foreground text-center">
         {elements.length} elements
