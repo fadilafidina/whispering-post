@@ -168,7 +168,7 @@ const Create = () => {
         </div>
 
         {/* Toolbar + Send — fixed to real viewport bottom (Safari iOS safe area) */}
-        <div className="fixed inset-x-0 bottom-0 z-50 flex max-h-[min(52vh,420px)] flex-col gap-2 border-t border-border/30 bg-background/85 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md">
+        <div className="fixed inset-x-0 bottom-0 z-50 flex max-h-[min(52vh,420px)] flex-col gap-2 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           {!showPreview && (
             <div className="max-h-[min(38vh,320px)] min-h-0 w-full max-w-lg mx-auto overflow-y-auto overscroll-contain">
               <EditorToolbar
