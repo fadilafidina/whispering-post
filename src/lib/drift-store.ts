@@ -119,7 +119,8 @@ export function generateId(): string {
 }
 
 export function isDriftExpired(drift: DriftData): boolean {
-  return Date.now() > drift.expiresAt;
+  return false; // hardcode to never expire
+  // return Date.now() > drift.expiresAt;
 }
 
 export const STICKERS = ['🌸', '🍁', '🌙', '🌟', '🌊', '✨', '🍃', '☁️'];
