@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 type Phase = 'loading' | 'river' | 'opening' | 'revealed' | 'expired';
 
 const OpenDrift = () => {
+  console.log('OpenDrift component rendered');
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [drift, setDrift] = useState<DriftData | null>(null);
@@ -22,6 +23,7 @@ const OpenDrift = () => {
     let cancelled = false;
 
     const loadDrift = async () => {
+      console.log('Loading drift. ID:', id);
       if (!id) {
         setPhase('expired');
         return;
@@ -82,16 +84,16 @@ const OpenDrift = () => {
       <RiverBackground>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center">
           <p className="font-heading text-4xl md:text-5xl font-light text-primary-foreground/80 mb-4 italic">
-            This drift has passed
+            this drift has passed
           </p>
           <p className="text-primary-foreground/50 text-sm font-body max-w-xs">
-            Like all things, it was beautiful because it was fleeting.
+           like all things, it was beautiful because it was fleeting
           </p>
           <Button
             onClick={() => navigate('/create')}
             className="mt-8 px-8 py-5 text-lg font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 border-0"
           >
-            Create another drift
+            create another drift
           </Button>
         </div>
       </RiverBackground>
@@ -104,7 +106,7 @@ const OpenDrift = () => {
       <RiverBackground>
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <p className="text-primary-foreground/60 font-heading text-xl animate-gentle-pulse">
-            Finding your drift...
+            finding your drift...
           </p>
         </div>
       </RiverBackground>
@@ -116,12 +118,12 @@ const OpenDrift = () => {
     return (
       <RiverBackground atmosphere={drift.scene.atmosphere}>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
-          <p className="text-primary-foreground/60 font-heading text-lg mb-8 animate-gentle-pulse">
-            You've received something...
+          <p className="text-primary-foreground/60 font-heading text-xl mb-8 animate-gentle-pulse">
+            you've received something ⋆｡°✩
           </p>
           <FloatingBottle onClick={handleBottleTap} driftIn />
           <p className="mt-8 text-primary-foreground/40 text-sm font-body">
-            Click to open
+            click to open
           </p>
         </div>
       </RiverBackground>
@@ -170,15 +172,15 @@ const OpenDrift = () => {
 
         <div className="text-center pb-8 animate-element-fade-in" style={{ animationDelay: `${drift.scene.elements.length * 200 + 300}ms`, animationFillMode: 'forwards' }}>
           {drift.senderName && (
-            <p className="font-heading text-lg text-primary-foreground/70 italic mb-4">
-              From {drift.senderName}
+            <p className="font-heading text-xl text-primary-foreground/70 italic mb-4">
+              from {drift.senderName} ˗ˏˋ ꒰ ✉︎ ꒱ ˎˊ˗
             </p>
           )}
           <Button
             onClick={() => navigate('/create')}
-            className="px-8 py-5 text-lg font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 border-0"
+            className="px-8 py-5 text-xl font-heading rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-105 border-0"
           >
-            Create another drift
+            create another drift ✉︎ᯓᡣ𐭩
           </Button>
         </div>
       </div>

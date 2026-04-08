@@ -94,8 +94,9 @@ export async function saveDrift(drift: DriftData): Promise<void> {
 
   try {
     await saveDriftToSupabase(compressedDrift);
-  } catch {
+  } catch (error) {
     // Keep UX resilient even if remote save fails
+    console.error('Failed to save drift to Supabase. Error:', error);
   }
 }
 
@@ -105,7 +106,14 @@ export async function getDrift(id: string): Promise<DriftData | null> {
 
   try {
     const remoteDrift = await getDriftFromSupabase(id);
-    if (!remoteDrift) return null;
+    if (!remoteDrift) {
+      console.error('Failed to get drift from Supabase. ID:', id);
+      return null;
+    }
+
+    console.log('Got drift from Supabase. ID:', id);
+    console.log('Drift:', remoteDrift);
+
     store[id] = remoteDrift;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
     return remoteDrift;

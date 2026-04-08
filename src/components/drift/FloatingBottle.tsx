@@ -12,7 +12,7 @@ const FloatingBottle = ({ onClick, driftIn = false }: FloatingBottleProps) => {
       }`}
       aria-label="Open the drift"
     >
-      <span className="drop-shadow-lg">💌</span>
+      <span className="drop-shadow-lg drift-element-alive">💌</span>
     </button>
   );
 };

@@ -96,7 +96,7 @@ const Create = () => {
             💌
           </div>
           <p className="mt-8 font-heading text-xl text-primary-foreground/70 italic animate-gentle-pulse">
-            {sendPhase === 'sealing' ? 'Sealing your drift...' : 'Setting adrift...'}
+            {sendPhase === 'sealing' ? 'sealing your drift...' : 'setting adrift...'}
           </p>
         </div>
       </RiverBackground>
@@ -110,16 +110,16 @@ const Create = () => {
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
           <div className="bg-card/90 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-border animate-element-fade-in">
             <div className="text-5xl mb-4">🌊</div>
-            <h2 className="font-heading text-3xl font-light text-foreground mb-2">Your drift is on its way</h2>
-            <p className="text-muted-foreground text-sm mb-6">Share this link — it will float for 24 hours</p>
+            <h2 className="font-heading text-3xl font-light text-foreground mb-2">your drift is on its way</h2>
+            <p className="text-muted-foreground text-sm mb-6">share this link — it will float for 24 hours</p>
             <div className="bg-muted rounded-lg p-3 mb-4 font-mono text-sm text-foreground break-all">
               {generatedLink}
             </div>
             <Button onClick={copyLink} className="w-full mb-3">
-              {copied ? '✓ Copied!' : 'Copy Link'}
+              {copied ? '✓ copied!' : 'copy link'}
             </Button>
             <Button variant="ghost" onClick={() => navigate('/')} className="text-muted-foreground">
-              Back to shore
+              back to shore
             </Button>
           </div>
         </div>
@@ -136,7 +136,7 @@ const Create = () => {
           <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-primary-foreground/80 hover:text-primary-foreground gap-1">
             <ArrowLeft className="w-4 h-4" /> Back
           </Button>
-          <h2 className="font-heading text-xl text-primary-foreground/80 font-light">Create your drift</h2>
+          <h2 className="font-heading text-xl text-primary-foreground/80 font-light">create your drift</h2>
           <div className="flex gap-2">
             <button
               onClick={toggleMute}
@@ -185,9 +185,9 @@ const Create = () => {
             <Button
               onClick={handleSend}
               disabled={elements.length === 0}
-              className="w-full max-w-sm px-6 py-4 text-base font-heading sm:w-auto sm:px-8 sm:py-5 sm:text-lg rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] gap-2 border-0"
+              className="w-full max-w-sm px-6 py-4 text-base font-heading sm:w-auto sm:px-8 sm:py-5 sm:text-xl rounded-full bg-card/90 text-foreground hover:bg-card shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] gap-2 border-0"
             >
-              <Send className="w-5 h-5" /> Set Adrift
+              <Send className="w-5 h-5" /> set adrift
             </Button>
           </div>
         </div>

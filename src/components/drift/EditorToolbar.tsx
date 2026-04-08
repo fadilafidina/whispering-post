@@ -149,7 +149,7 @@ const EditorToolbar = ({
 
       {/* Atmosphere */}
       <div className="border-t border-border pt-3">
-        <p className="text-xs text-muted-foreground mb-2 text-center">Atmosphere</p>
+        <p className="text-xs text-muted-foreground mb-2 text-center">atmosphere</p>
         <div className="flex gap-2 justify-center">
           {(Object.keys(ATMOSPHERE_CONFIG) as Atmosphere[]).map((a) => (
             <button
@@ -172,7 +172,7 @@ const EditorToolbar = ({
         <Input
           value={senderName}
           onChange={(e) => onSenderNameChange(e.target.value)}
-          placeholder="Your name (optional)"
+          placeholder="your name (optional)"
           className="text-sm text-center"
         />
       </div>
